@@ -17,7 +17,7 @@ type GraphNode struct {
 
 func (g *GraphNode) OutgoingEdges() []Edge {
 	edges := make([]Edge, 0)
-	for e := range g.edges.set {
+	for e := range g.edges.AllEdges() {
 		if e.ToNode().GetId() != g.Id {
 			edges = append(edges, e)
 		}
