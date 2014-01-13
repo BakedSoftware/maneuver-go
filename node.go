@@ -6,7 +6,8 @@ type Node interface {
 	SetEdges(e *EdgeSet)
 	// Get the edges that originate from the node and are not re-entrant on the
 	// node. Must be free of single node cycles (Edge.From != Edge.To)
-	OutgoingEdges() []*Edge
+	OutgoingEdges() []Edge
+	Clone() Node
 }
 
 type GraphNode struct {
@@ -14,10 +15,10 @@ type GraphNode struct {
 	edges *EdgeSet
 }
 
-func (g *GraphNode) OutgoingEdges() []*Edge {
-	edges := make([]*Edge, 0)
-	for _, e := range g.edges.set {
-		if e.To.GetId() != g.Id {
+func (g *GraphNode) OutgoingEdges() []Edge {
+	edges := make([]Edge, 0)
+	for e := range g.edges.set {
+		if e.ToNode().GetId() != g.Id {
 			edges = append(edges, e)
 		}
 	}
@@ -34,4 +35,11 @@ func (g *GraphNode) Edges() *EdgeSet {
 
 func (g *GraphNode) SetEdges(e *EdgeSet) {
 	g.edges = e
+}
+
+func (g *GraphNode) Clone() Node {
+	return &GraphNode{
+		Id:    g.Id,
+		edges: g.edges,
+	}
 }
