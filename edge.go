@@ -17,10 +17,7 @@ type Edge interface {
 }
 
 func (g *GraphEdge) Clone() Edge {
-	return &GraphEdge{
-		From: g.From.Clone(),
-		To:   g.To.Clone(),
-	}
+	return NewGraphEdge(g.From.Clone(), g.To.Clone())
 }
 
 func (g *GraphEdge) FromNode() Node {

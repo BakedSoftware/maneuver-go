@@ -39,6 +39,10 @@ func (n *NodeSet) Empty() bool {
 	return n.length == 0
 }
 
+func (n *NodeSet) Get(id uint64) Node {
+	return n.set[id]
+}
+
 func (n *NodeSet) AllNodes() []Node {
 	nodes := make([]Node, len(n.set))
 	i := 0
