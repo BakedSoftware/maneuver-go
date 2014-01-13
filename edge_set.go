@@ -47,6 +47,15 @@ func (e *EdgeSet) AllEdges() map[Edge]struct{} {
 	return newSet
 }
 
+func (e *EdgeSet) Clone() *EdgeSet {
+	edges := NewEdgeSet()
+	for k, v := range e.set {
+		edges.set[k] = v
+	}
+
+	return edges
+}
+
 func (e *EdgeSet) Size() uint64 {
 	return e.length
 }

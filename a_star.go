@@ -7,7 +7,7 @@ import (
 type AStarSearch struct {
 }
 
-func (a *AStarSearch) Path(grph *Graph, from, to Node, costAlgo uint8) []Node {
+func (a *AStarSearch) Path(graph *Graph, from, to Node, costAlgo uint8) []Node {
 	if costAlgo == NONE {
 		panic("Edge cost algorithm must be set")
 	}
@@ -21,11 +21,11 @@ func (a *AStarSearch) Path(grph *Graph, from, to Node, costAlgo uint8) []Node {
 
 	for !open.Empty() {
 		current := a.keyWithMinValue(open, fScore)
-		if current == to {
+		if current.GetId() == to.GetId() {
 			return a.reconstructPath(cameFrom, to)
 		}
 		open.Remove(current)
-		for _, e := range current.OutgoingEdges() {
+		for _, e := range graph.OutgoingEdgesForNode(current) {
 			n := e.ToNode()
 			tGScore := gScore[current] + estimate.Cost(e.FromNode(), n)
 			if ok := open.Contains(n); !ok || tGScore <= gScore[n] {
