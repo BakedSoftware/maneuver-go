@@ -11,6 +11,14 @@ type TransportNode struct {
 	Lat, Lon float64
 }
 
+func (t *TransportNode) Clone() Node {
+	return &TransportNode{
+		GraphNode: *(t.GraphNode.Clone().(*GraphNode)),
+		Lat:       t.Lat,
+		Lon:       t.Lon,
+	}
+}
+
 type ManhattanDistance struct {
 }
 
@@ -42,7 +50,7 @@ func ExampleRegisterCostAlgorithm() {
 	// )
 
 	// It can registered as available using:
-	RegisterCostAlgorithm(&ManhattanDistance{}, name)
+	RegisterCostAlgorithm(&ManhattanDistance{}, Manhattan)
 
 	// Then you can call graph.Path(from, to, AStar, Manhattan) and a path
 	// between from and to will be found using A Star and Manhattan distance
@@ -67,7 +75,7 @@ func ExampleNewGraphWithEdges() {
 	n2 := &TransportNode{GraphNode: GraphNode{Id: 2}, Lat: 10, Lon: 10}
 
 	edges := NewEdgeSet()
-	edges.Add(NewEdge(n1, n2))
+	edges.Add(NewGraphEdge(n1, n2))
 
 	/* graph := */ NewGraphWithEdges(edges)
 
@@ -83,13 +91,13 @@ var n7 = &TransportNode{GraphNode: GraphNode{Id: 7}, Lat: 40, Lon: 40}
 
 func buildGraph() *Graph {
 	edges := NewEdgeSet()
-	edges.Add(NewEdge(n1, n2))
-	edges.Add(NewEdge(n2, n3))
-	edges.Add(NewEdge(n1, n4))
-	edges.Add(NewEdge(n4, n5))
-	edges.Add(NewEdge(n6, n7))
-	edges.Add(NewEdge(n1, n6))
-	edges.Add(NewEdge(n3, n7))
+	edges.Add(NewGraphEdge(n1, n2))
+	edges.Add(NewGraphEdge(n2, n3))
+	edges.Add(NewGraphEdge(n1, n4))
+	edges.Add(NewGraphEdge(n4, n5))
+	edges.Add(NewGraphEdge(n6, n7))
+	edges.Add(NewGraphEdge(n1, n6))
+	edges.Add(NewGraphEdge(n3, n7))
 
 	return NewGraphWithEdges(edges)
 }
@@ -110,13 +118,13 @@ func Example() {
 	// Create the edges between the nodes. Edges are directed.
 	// Always use NewEdgeSet and NewEdge.
 	edges := NewEdgeSet()
-	edges.Add(NewEdge(n1, n2))
-	edges.Add(NewEdge(n2, n3))
-	edges.Add(NewEdge(n1, n4))
-	edges.Add(NewEdge(n4, n5))
-	edges.Add(NewEdge(n6, n7))
-	edges.Add(NewEdge(n1, n6))
-	edges.Add(NewEdge(n3, n7))
+	edges.Add(NewGraphEdge(n1, n2))
+	edges.Add(NewGraphEdge(n2, n3))
+	edges.Add(NewGraphEdge(n1, n4))
+	edges.Add(NewGraphEdge(n4, n5))
+	edges.Add(NewGraphEdge(n6, n7))
+	edges.Add(NewGraphEdge(n1, n6))
+	edges.Add(NewGraphEdge(n3, n7))
 
 	// Create a new graph
 	graph := NewGraphWithEdges(edges)

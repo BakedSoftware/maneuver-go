@@ -1,51 +1,38 @@
 package maneuver
 
 import (
-	"fmt"
 	"sync"
 )
 
-// Store a set of edges. Edges are determined as unique based on the pointer
-// values of Edge.From and Edge.To
 type EdgeSet struct {
 	length uint64
 	lock   sync.Mutex
-	set    map[string]*Edge
+	set    map[Edge]struct{}
 }
 
-func (n *EdgeSet) Add(edge *Edge) {
+func (n *EdgeSet) Add(edge Edge) {
 	n.lock.Lock()
 	defer n.lock.Unlock()
-	key := keyForEdge(edge)
-	if n.containsKey(key) {
+	if n.Contains(edge) {
 		return
 	}
-	n.set[key] = edge
+	n.set[edge] = struct{}{}
 	n.length++
 }
 
-func (n *EdgeSet) Remove(edge *Edge) {
+func (n *EdgeSet) Remove(edge Edge) {
 	n.lock.Lock()
 	defer n.lock.Unlock()
-	key := keyForEdge(edge)
-	if !n.containsKey(key) {
+	if !n.Contains(edge) {
 		return
 	}
-	delete(n.set, key)
+	delete(n.set, edge)
 	n.length--
 }
 
-func (n *EdgeSet) containsKey(key string) bool {
-	_, ok := n.set[key]
+func (n *EdgeSet) Contains(edge Edge) bool {
+	_, ok := n.set[edge]
 	return ok
-}
-
-func (n *EdgeSet) Contains(edge *Edge) bool {
-	return n.containsKey(keyForEdge(edge))
-}
-
-func keyForEdge(edge *Edge) string {
-	return fmt.Sprintf("%p-%p", edge.From, edge.To)
 }
 
 func (n *EdgeSet) Empty() bool {
@@ -54,6 +41,6 @@ func (n *EdgeSet) Empty() bool {
 
 func NewEdgeSet() *EdgeSet {
 	return &EdgeSet{
-		set: make(map[string]*Edge),
+		set: make(map[Edge]struct{}),
 	}
 }

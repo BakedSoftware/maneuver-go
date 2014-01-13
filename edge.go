@@ -1,12 +1,33 @@
 package maneuver
 
-type Edge struct {
+type GraphEdge struct {
 	From Node
 	To   Node
 }
 
-func NewEdge(from, to Node) *Edge {
-	e := Edge{from, to}
+type Edge interface {
+	FromNode() Node
+	ToNode() Node
+	Clone() Edge
+}
+
+func (g *GraphEdge) Clone() Edge {
+	return &GraphEdge{
+		From: g.From.Clone(),
+		To:   g.To.Clone(),
+	}
+}
+
+func (g *GraphEdge) FromNode() Node {
+	return g.From
+}
+
+func (g *GraphEdge) ToNode() Node {
+	return g.To
+}
+
+func NewGraphEdge(from, to Node) *GraphEdge {
+	e := GraphEdge{from, to}
 	if from.Edges() == nil {
 		from.SetEdges(NewEdgeSet())
 	}

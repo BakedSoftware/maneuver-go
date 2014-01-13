@@ -26,8 +26,8 @@ func (a *AStarSearch) Path(grph *Graph, from, to Node, costAlgo uint8) []Node {
 		}
 		open.Remove(current)
 		for _, e := range current.OutgoingEdges() {
-			n := e.To
-			tGScore := gScore[current] + estimate.Cost(e.From, e.To)
+			n := e.ToNode()
+			tGScore := gScore[current] + estimate.Cost(e.FromNode(), n)
 			if ok := open.Contains(n); !ok || tGScore <= gScore[n] {
 				cameFrom[n] = current
 				gScore[n] = tGScore
@@ -45,7 +45,7 @@ func (a *AStarSearch) Path(grph *Graph, from, to Node, costAlgo uint8) []Node {
 func (a *AStarSearch) keyWithMinValue(set *NodeSet, hash map[Node]float64) Node {
 	minValue := math.MaxFloat64
 	var minKey Node = nil
-	for k := range set.set {
+	for _, k := range set.set {
 		m := hash[k]
 		if m < minValue {
 			minKey = k

@@ -7,7 +7,7 @@ import (
 type NodeSet struct {
 	length uint64
 	lock   sync.Mutex
-	set    map[Node]struct{}
+	set    map[uint64]Node
 }
 
 func (n *NodeSet) Add(node Node) {
@@ -16,7 +16,7 @@ func (n *NodeSet) Add(node Node) {
 	if n.Contains(node) {
 		return
 	}
-	n.set[node] = struct{}{}
+	n.set[node.GetId()] = node
 	n.length++
 }
 
@@ -26,12 +26,12 @@ func (n *NodeSet) Remove(node Node) {
 	if !n.Contains(node) {
 		return
 	}
-	delete(n.set, node)
+	delete(n.set, node.GetId())
 	n.length--
 }
 
 func (n *NodeSet) Contains(node Node) bool {
-	_, ok := n.set[node]
+	_, ok := n.set[node.GetId()]
 	return ok
 }
 
@@ -41,6 +41,6 @@ func (n *NodeSet) Empty() bool {
 
 func NewNodeSet() *NodeSet {
 	return &NodeSet{
-		set: make(map[Node]struct{}),
+		set: make(map[uint64]Node),
 	}
 }

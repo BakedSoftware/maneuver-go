@@ -18,12 +18,12 @@ func NewGraph() *Graph {
 
 func NewGraphWithEdges(edges *EdgeSet) *Graph {
 	graph := Graph{Edges: edges, Nodes: NewNodeSet()}
-	for _, e := range edges.set {
-		if !graph.ContainsNode(e.From) {
-			graph.AddNode(e.From)
+	for e := range edges.set {
+		if !graph.ContainsNode(e.FromNode()) {
+			graph.AddNode(e.FromNode())
 		}
-		if !graph.ContainsNode(e.To) {
-			graph.AddNode(e.To)
+		if !graph.ContainsNode(e.ToNode()) {
+			graph.AddNode(e.ToNode())
 		}
 	}
 	return &graph
@@ -37,6 +37,32 @@ func (g *Graph) AddNode(node Node) {
 	g.Nodes.Add(node)
 }
 
+func (g *Graph) InsertEdges(edges ...Edge) {
+	for _, e := range edges {
+		if !g.ContainsMatchingEdge(e) {
+			g.Edges.Add(e)
+			if !g.ContainsNode(e.FromNode()) {
+				g.AddNode(e.FromNode())
+			}
+			if !g.ContainsNode(e.ToNode()) {
+				g.AddNode(e.ToNode())
+			}
+		}
+	}
+}
+
+func (g *Graph) ContainsEdge(edge Edge) bool {
+	return g.Edges.Contains(edge)
+}
+
+func (g *Graph) ContainsMatchingEdge(edge Edge) bool {
+	if yes := g.ContainsEdge(edge); yes {
+		return true
+	}
+
+	return g.EdgeBetween(edge.FromNode(), edge.ToNode()) != nil
+}
+
 func (g *Graph) Path(from, to Node, searchKey, costKey uint8) []Node {
 	if from == to {
 		return []Node{from}
@@ -48,23 +74,23 @@ func (g *Graph) Path(from, to Node, searchKey, costKey uint8) []Node {
 	return search.Path(g, from, to, costKey)
 }
 
-func (g *Graph) EdgeBetween(from, to Node) *Edge {
+func (g *Graph) EdgeBetween(from, to Node) Edge {
 	for _, e := range from.OutgoingEdges() {
-		if e.To == to && g.Edges.Contains(e) {
+		if e.ToNode() == to && g.Edges.Contains(e) {
 			return e
 		}
 	}
 	return nil
 }
 
-// func (g *Graph) Clone() *Graph {
-// 	edges := NewEdgeSet()
-// 	for e, _ := range g.Edges.set {
-// 		edges.Add(&Edge{
-// 			From:   e.From.Clone(),
-// 			To:     e.To.Clone(),
-// 			Weight: e.Weight,
-// 		})
-// 	}
-// 	return NewGraphWithEdges(edges)
-// }
+func (g *Graph) GetNodeWithId(id uint64) Node {
+	return g.Nodes.set[id]
+}
+
+func (g *Graph) Clone() *Graph {
+	edges := NewEdgeSet()
+	for e, _ := range g.Edges.set {
+		edges.Add(e.Clone())
+	}
+	return NewGraphWithEdges(edges)
+}

@@ -28,7 +28,7 @@ func (f *FirstSearch) Path(grph *Graph, from, to Node, costAlgo uint8) []Node {
 	nodeToItem[from] = &fromSearchItem
 
 	for _, edge := range from.OutgoingEdges() {
-		item := firstSearchItem{edge.To, nodeToItem[edge.From]}
+		item := firstSearchItem{edge.ToNode(), nodeToItem[edge.FromNode()]}
 		nodesToCheck = append(nodesToCheck, &item)
 	}
 
@@ -43,9 +43,9 @@ func (f *FirstSearch) Path(grph *Graph, from, to Node, costAlgo uint8) []Node {
 			return f.reconstructPath(item)
 		}
 		for _, edge := range item.node.OutgoingEdges() {
-			if _, ok := visited[nodeToItem[edge.To]]; !ok {
-				test := firstSearchItem{edge.To, item}
-				nodeToItem[edge.To] = &test
+			if _, ok := visited[nodeToItem[edge.ToNode()]]; !ok {
+				test := firstSearchItem{edge.ToNode(), item}
+				nodeToItem[edge.ToNode()] = &test
 				visited[&test] = true
 				nodesToCheck = append([]*firstSearchItem{&test}, nodesToCheck...)
 			}
