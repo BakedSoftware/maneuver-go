@@ -232,3 +232,49 @@ func TestAStarSearch(t *testing.T) {
 		t.Fatal("Last Node must be To node, got", node.GetId())
 	}
 }
+
+func TestEdgeBetween(t *testing.T) {
+	graph := buildGraph()
+
+	if graph.EdgeBetween(n1, n2) == nil {
+		t.Log("Graph does not contain known edge")
+		t.Fail()
+	}
+}
+
+func TestContainsEdgeAfterClone(t *testing.T) {
+	graph := buildGraph().Clone()
+
+	if graph.EdgeBetween(n1, n2) == nil {
+		t.Log("Cloned graph does not contain known edge")
+		t.Fail()
+	}
+
+}
+
+func TestBreadthFirstSearchAfterClone(t *testing.T) {
+	graph := buildGraph().Clone()
+	path := graph.Path(n1, n7, BFS, NONE)
+
+	//Expected: n1 -> n6 -> n7
+	if len(path) != 3 {
+		t.Log("Incorrect path length. Expected 3 got ", len(path))
+		for _, n := range path {
+			t.Log(n.(*TransportNode).GetId())
+		}
+		t.FailNow()
+	}
+	var node *TransportNode
+	node = path[0].(*TransportNode)
+	if node.GetId() != n1.GetId() {
+		t.Fatal("First Node must be From node, got", node.GetId())
+	}
+	node = path[1].(*TransportNode)
+	if node.GetId() != n6.GetId() {
+		t.Fatal("Path should have gone through N6, got", node.GetId())
+	}
+	node = path[2].(*TransportNode)
+	if node.GetId() != n7.GetId() {
+		t.Fatal("Last Node must be To node, got", node.GetId())
+	}
+}

@@ -65,23 +65,34 @@ func (g *Graph) ContainsMatchingEdge(edge Edge) bool {
 }
 
 func (g *Graph) Path(from, to Node, searchKey, costKey uint8) []Node {
-	if from == to {
+	if from.GetId() == to.GetId() {
 		return []Node{from}
 	}
 	search := GetPathAlgorithm(searchKey)
 	if search == nil {
 		log.Panicln("Unknown Path Algorithm: ", searchKey)
 	}
-	return search.Path(g, from, to, costKey)
+	return search.Path(g, g.GetNodeWithId(from.GetId()), g.GetNodeWithId(to.GetId()), costKey)
 }
 
 func (g *Graph) EdgeBetween(from, to Node) Edge {
-	for _, e := range from.OutgoingEdges() {
-		if e.ToNode() == to && g.Edges.Contains(e) {
+	for _, e := range g.OutgoingEdgesForNode(from) {
+		if e.ToNode().GetId() == to.GetId() {
 			return e
 		}
 	}
 	return nil
+}
+
+func (g *Graph) OutgoingEdgesForNode(node Node) []Edge {
+	out := node.OutgoingEdges()
+	edges := make([]Edge, 0, len(out))
+	for _, e := range out {
+		if g.Edges.Contains(e) {
+			edges = append(edges, e)
+		}
+	}
+	return edges
 }
 
 func (g *Graph) GetNodeWithId(id uint64) Node {
