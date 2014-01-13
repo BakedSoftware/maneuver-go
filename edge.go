@@ -1,5 +1,9 @@
 package maneuver
 
+import (
+	"fmt"
+)
+
 type GraphEdge struct {
 	From Node
 	To   Node
@@ -9,6 +13,7 @@ type Edge interface {
 	FromNode() Node
 	ToNode() Node
 	Clone() Edge
+	String() string
 }
 
 func (g *GraphEdge) Clone() Edge {
@@ -24,6 +29,10 @@ func (g *GraphEdge) FromNode() Node {
 
 func (g *GraphEdge) ToNode() Node {
 	return g.To
+}
+
+func (g *GraphEdge) String() string {
+	return fmt.Sprintf("%s -> %s", g.From.String(), g.To.String())
 }
 
 func NewGraphEdge(from, to Node) *GraphEdge {
