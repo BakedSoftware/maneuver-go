@@ -1,5 +1,9 @@
 package maneuver
 
+import (
+	"strconv"
+)
+
 type Node interface {
 	GetId() uint64
 	Edges() *EdgeSet
@@ -8,6 +12,8 @@ type Node interface {
 	// node. Must be free of single node cycles (Edge.From != Edge.To)
 	OutgoingEdges() []Edge
 	Clone() Node
+	// Used when create DOT output
+	String() string
 }
 
 type GraphNode struct {
@@ -17,7 +23,7 @@ type GraphNode struct {
 
 func (g *GraphNode) OutgoingEdges() []Edge {
 	edges := make([]Edge, 0)
-	for e := range g.edges.set {
+	for e := range g.edges.AllEdges() {
 		if e.ToNode().GetId() != g.Id {
 			edges = append(edges, e)
 		}
@@ -35,6 +41,10 @@ func (g *GraphNode) Edges() *EdgeSet {
 
 func (g *GraphNode) SetEdges(e *EdgeSet) {
 	g.edges = e
+}
+
+func (g *GraphNode) String() string {
+	return strconv.Itoa(int(g.Id))
 }
 
 func (g *GraphNode) Clone() Node {

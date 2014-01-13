@@ -39,6 +39,18 @@ func (n *EdgeSet) Empty() bool {
 	return n.length == 0
 }
 
+func (e *EdgeSet) AllEdges() map[Edge]struct{} {
+	newSet := make(map[Edge]struct{})
+	for k, v := range e.set {
+		newSet[k] = v
+	}
+	return newSet
+}
+
+func (e *EdgeSet) Size() uint64 {
+	return e.length
+}
+
 func NewEdgeSet() *EdgeSet {
 	return &EdgeSet{
 		set: make(map[Edge]struct{}),

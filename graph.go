@@ -1,6 +1,7 @@
 package maneuver
 
 import (
+	"fmt"
 	"log"
 )
 
@@ -93,4 +94,13 @@ func (g *Graph) Clone() *Graph {
 		edges.Add(e.Clone())
 	}
 	return NewGraphWithEdges(edges)
+}
+
+func (g *Graph) DOT() string {
+	dot := "digraph G {\n"
+	for e := range g.Edges.AllEdges() {
+		dot += fmt.Sprintf("\t%s;\n", e.String())
+	}
+	dot += "}"
+	return dot
 }

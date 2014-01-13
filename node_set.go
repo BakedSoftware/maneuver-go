@@ -39,6 +39,19 @@ func (n *NodeSet) Empty() bool {
 	return n.length == 0
 }
 
+func (n *NodeSet) AllNodes() []Node {
+	nodes := make([]Node, len(n.set))
+	i := 0
+	for _, v := range n.set {
+		nodes[i], i = v, i+1
+	}
+	return nodes
+}
+
+func (n *NodeSet) Size() uint64 {
+	return n.length
+}
+
 func NewNodeSet() *NodeSet {
 	return &NodeSet{
 		set: make(map[uint64]Node),
