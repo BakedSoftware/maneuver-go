@@ -12,12 +12,12 @@ type GraphEdge struct {
 type Edge interface {
 	FromNode() Node
 	ToNode() Node
-	Clone() Edge
+	Clone(c *Cloner) Edge
 	String() string
 }
 
-func (g *GraphEdge) Clone() Edge {
-	return NewGraphEdge(g.From.Clone(), g.To.Clone())
+func (g *GraphEdge) Clone(c *Cloner) Edge {
+	return NewGraphEdge(g.From.Clone(c), g.To.Clone(c))
 }
 
 func (g *GraphEdge) FromNode() Node {
