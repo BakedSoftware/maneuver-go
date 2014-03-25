@@ -11,7 +11,7 @@ type Node interface {
 	// Get the edges that originate from the node and are not re-entrant on the
 	// node. Must be free of single node cycles (Edge.From != Edge.To)
 	OutgoingEdges() []Edge
-	Clone() Node
+	Clone(c *Cloner) Node
 	// Used when create DOT output
 	String() string
 }
@@ -47,9 +47,14 @@ func (g *GraphNode) String() string {
 	return strconv.Itoa(int(g.Id))
 }
 
-func (g *GraphNode) Clone() Node {
-	return &GraphNode{
+func (g *GraphNode) Clone(c *Cloner) Node {
+	if c.Nodes.Contains(g) {
+		return c.Nodes.Get(g.GetId())
+	}
+	clone := &GraphNode{
 		Id:    g.Id,
 		edges: g.edges,
 	}
+	c.Nodes.Add(clone)
+	return clone
 }

@@ -86,6 +86,8 @@ func (g *Graph) EdgeBetween(from, to Node) Edge {
 
 func (g *Graph) OutgoingEdgesForNode(node Node) []Edge {
 	out := node.OutgoingEdges()
+	log.Printf("node: %+v\n", node.Edges().AllEdges())
+	log.Printf("Out: %+v\n", out)
 	edges := make([]Edge, 0, len(out))
 	for _, e := range out {
 		if g.Edges.Contains(e) {
@@ -99,10 +101,19 @@ func (g *Graph) GetNodeWithId(id uint64) Node {
 	return g.Nodes.set[id]
 }
 
+type Cloner struct {
+	Edges *EdgeSet
+	Nodes *NodeSet
+}
+
 func (g *Graph) Clone() *Graph {
+	cloner := &Cloner{
+		Edges: NewEdgeSet(),
+		Nodes: NewNodeSet(),
+	}
 	edges := NewEdgeSet()
 	for e, _ := range g.Edges.set {
-		edges.Add(e.Clone())
+		edges.Add(e.Clone(cloner))
 	}
 	return NewGraphWithEdges(edges)
 }
