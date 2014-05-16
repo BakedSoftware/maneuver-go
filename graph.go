@@ -86,8 +86,6 @@ func (g *Graph) EdgeBetween(from, to Node) Edge {
 
 func (g *Graph) OutgoingEdgesForNode(node Node) []Edge {
 	out := node.OutgoingEdges()
-	log.Printf("node: %+v\n", node.Edges().AllEdges())
-	log.Printf("Out: %+v\n", out)
 	edges := make([]Edge, 0, len(out))
 	for _, e := range out {
 		if g.Edges.Contains(e) {
